@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMeteo", "OpenMeteo\OpenMeteo.csproj", "{F4B8826F-30F2-4E72-95D3-CA5824DCF1D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMeteoClient", "OpenMeteoClient\OpenMeteoClient.csproj", "{C3702681-5F0D-4325-82E1-75AA48A8C577}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F4B8826F-30F2-4E72-95D3-CA5824DCF1D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B8826F-30F2-4E72-95D3-CA5824DCF1D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B8826F-30F2-4E72-95D3-CA5824DCF1D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B8826F-30F2-4E72-95D3-CA5824DCF1D3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3702681-5F0D-4325-82E1-75AA48A8C577}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3702681-5F0D-4325-82E1-75AA48A8C577}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3702681-5F0D-4325-82E1-75AA48A8C577}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3702681-5F0D-4325-82E1-75AA48A8C577}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,2 @@
+obj\Debug\net7.0\Protos/OpenMeteo.cs \
+obj\Debug\net7.0\Protos/OpenMeteoGrpc.cs: Protos/openMeteo.proto

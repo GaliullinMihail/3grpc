@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "9kWEXxvUWfRiaLjPF1I6r8V21EHiKCJdKsTWGS7/6GE=",
+  "Source": "OpenMeteo",
+  "BasePath": "_content/OpenMeteo",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
