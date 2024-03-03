@@ -2,6 +2,7 @@ using System.Text;
 using GrpcStreamingChat.Jwt;
 using GrpcStreamingChat.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,14 @@ services.AddScoped<IJWTAuthenticationManager, JWTAuthenticationManager>();
 
 // Add services to the container.
 builder.Services.AddGrpc();
+builder.Services.AddSingleton<ChatRoomService>();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    // Setup a HTTP/2 endpoint without TLS.
+    options.ListenLocalhost(50051, o => o.Protocols =
+        HttpProtocols.Http2);
+});
 
 var key = Encoding.ASCII.GetBytes("TestTokenKeyJwtTokenKeyTestItFromTestTestTokenKeyJwtTokenKeyTestItFromTest");
 services.AddAuthentication(x =>
@@ -38,6 +47,7 @@ services.AddAuthorization();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+app.MapGrpcService<ChatService>();
 app.MapGrpcService<GreeterService>();
 app.MapGrpcService<JwtService>();
 app.MapGet("/",
