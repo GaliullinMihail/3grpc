@@ -14,7 +14,7 @@ services.AddScoped<IJWTAuthenticationManager, JWTAuthenticationManager>();
 
 // Add services to the container.
 builder.Services.AddGrpc();
-builder.Services.AddSingleton<ChatRoomService>();
+builder.Services.AddSingleton<IChatRoomService>();
 
 builder.WebHost.ConfigureKestrel(options =>
 {

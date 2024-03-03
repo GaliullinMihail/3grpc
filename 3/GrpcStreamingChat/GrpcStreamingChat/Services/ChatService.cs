@@ -1,15 +1,17 @@
 using Grpc.Core;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrpcStreamingChat.Services;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class ChatService : ChatServer.ChatServerBase
 {
-    private readonly ILogger<ChatService> _logger;
     private readonly IChatRoomService _chatRoomService;
 
-    public ChatService(ILogger<ChatService> logger)
+    public ChatService(IChatRoomService chatRoomService)
     {
-        _logger = logger;
+        _chatRoomService = chatRoomService;
     }
 
     public override async Task HandleCommunication(IAsyncStreamReader<ClientMessage> requestStream, IServerStreamWriter<ServerMessage> responseStream, ServerCallContext context)
@@ -44,7 +46,7 @@ public class ChatService : ChatServer.ChatServerBase
                             return;
                         }
 
-                        //Send login succes message to client
+                        //Send login success message to client
                         var successMessage = new ServerMessage { LoginSuccess = new ServerMessageLoginSuccess() };
                         await responseStream.WriteAsync(successMessage);
 
@@ -54,6 +56,7 @@ public class ChatService : ChatServer.ChatServerBase
                             StreamWriter = responseStream,
                             UserName = userName
                         });
+                        await _chatRoomService.BroadcastClientJoinedRoomMessage(userName, chatRoomId);
 
                         break;
 

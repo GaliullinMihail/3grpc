@@ -120,4 +120,3 @@ public class ChatRoomService : IChatRoomService
         public IServerStreamWriter<ServerMessage> StreamWriter { get; set; }
         public string UserName { get; set; }
     }
-}
