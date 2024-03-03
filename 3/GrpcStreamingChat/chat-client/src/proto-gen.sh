@@ -2,10 +2,10 @@
 
 npm i zaucy-protoc-gen-grpc-web -g
 
-protoc -I=./proto jwt.proto \
+protoc -I=./Protos jwt.proto \
     --js_out=import_style=commonjs:./generated \
     --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./generated
 
-protoc -I=./proto message.proto \
+protoc -I=./Protos message.proto \
     --js_out=import_style=commonjs:./generated \
     --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./generated
