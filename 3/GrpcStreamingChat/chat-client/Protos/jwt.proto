@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcStreamingChat";
+
+
+package jwt;
+
+service JwtSender {
+  rpc SendJwt (JwtRequest) returns (JwtReply);
+}
+
+message JwtRequest {
+  string name = 1;
+}
+
+message JwtReply {
+  string message = 1;
+}
