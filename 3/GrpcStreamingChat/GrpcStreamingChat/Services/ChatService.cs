@@ -1,6 +1,6 @@
 namespace GrpcStreamingChat.Services;
 
-public class ChatService : ChatServiceBase
+public class ChatService : ChatServer.ChatServerBase
 {
     
 }

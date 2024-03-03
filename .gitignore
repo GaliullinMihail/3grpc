@@ -149,6 +149,8 @@ sftp-config.json
 
 
 # bin and obj folders #
+*/*/*/bin
+*/*/*/obj
 */bin
 */obj
 */*/bin
