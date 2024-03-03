@@ -8,14 +8,14 @@ namespace GrpcStreamingChat.Jwt;
 public interface IJWTAuthenticationManager
 {
     string Authenticate(string username, string password);
+    void Register(string name);
 }
  
 public class JWTAuthenticationManager : IJWTAuthenticationManager
 {
     IDictionary<string, string> users = new Dictionary<string, string>
     {
-        { "test1", "password1" },
-        { "test2", "password2" }
+        { "test1", "password1" }
     };
  
     private readonly string tokenKey;
@@ -47,5 +47,10 @@ public class JWTAuthenticationManager : IJWTAuthenticationManager
         };
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
+    }
+
+    public void Register(string name)
+    {
+        users.Add(name, name);
     }
 }

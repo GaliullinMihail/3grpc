@@ -14,7 +14,8 @@ public class JwtService : JwtSender.JwtSenderBase
     
     public override Task<JwtReply> SendJwt(JwtRequest request, ServerCallContext context)
     {
-        var token = jWTAuthenticationManager.Authenticate("test1", "password1");
+        jWTAuthenticationManager.Register(request.Name);
+        var token = jWTAuthenticationManager.Authenticate(request.Name, request.Name);
 
         return Task.FromResult(new JwtReply
         {
