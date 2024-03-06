@@ -1,17 +1,5 @@
 import React from "react";
-import Card from "@material-ui/core/Card";
-import { Avatar, Typography, Chip, Grid } from "@material-ui/core";
-
-const IUser = {
-  id: number,
-  name: string,
-  isOnline: boolean,
-  avatar: string
-}
-
-const Props = {
-  users: [] //Users
-}
+import { Card, Avatar, Typography, Chip, Grid } from "@mui/material";
 
 const style = {
   card: {

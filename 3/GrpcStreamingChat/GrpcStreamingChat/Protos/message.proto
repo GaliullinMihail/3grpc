@@ -7,7 +7,6 @@ package chat;
 service ChatServer {
   // Bidirectional communication stream between client and server
   rpc HandleCommunication(stream ClientMessage) returns (stream ServerMessage);
-
 }
 
 //Client Messages:
@@ -22,7 +21,6 @@ message ClientMessageLogin {
   string chat_room_id = 1;
   string user_name = 2;
 }
-
 
 message ClientMessageChat {
   string text = 1;

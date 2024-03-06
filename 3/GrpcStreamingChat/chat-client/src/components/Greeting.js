@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import Paper from "@material-ui/core/Paper";
-import Typopgraphy from "@material-ui/core/Typography";
-import TextField from "@material-ui/core/TextField";
-import Avatar from "@material-ui/core/Avatar";
-import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
-import ImageGalleryDialog from "./ImageGallery";
+import { 
+  TextField,
+  Typography,
+  Paper
+} from "@mui/material";
 
 const style = {
   paper: {
@@ -37,34 +35,19 @@ const style = {
 
 const Greeting = (props) => {
   const [name, setName] = useState("");
-  const [img, setImage] = useState("");
-  const [open, setOpen] = useState(false);
   const { onUsernameEnter } = props;
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!name && !img) return;
-    onUsernameEnter(name, img);
-  };
-  const handleImageSelect = (imgURL) => {
-    if (!imgURL) return;
-    setImage(imgURL);
-    setOpen(false);
+    if (!name) return;
+    onUsernameEnter(name);
   };
   return (
     <>
       <Paper style={style.paper}>
         <form onSubmit={handleSubmit} style={style.form}>
-          <Typopgraphy variant="h5">
+          <Typography variant="h5">
             Please enter your name before joining the chat
-          </Typopgraphy>
-          <IconButton
-            style={style.avatar}
-            onClick={() => setOpen((prev) => !prev)}
-          >
-            <Tooltip title="Add Image">
-              <Avatar src={img} style={style.avatar} sizes="large" />
-            </Tooltip>
-          </IconButton>
+          </Typography>
           <TextField
             style={style.input}
             placeholder="Enter Username..."
@@ -83,7 +66,6 @@ const Greeting = (props) => {
           />
         </form>
       </Paper>
-      <ImageGalleryDialog isOpen={open} onImageSelect={handleImageSelect} />
     </>
   );
 };
