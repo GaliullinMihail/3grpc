@@ -44,13 +44,22 @@ services.AddAuthentication(x =>
  
 services.AddAuthorization();
 
-builder.Services.AddCors(options =>
+var testSpesific = "CORS";
+
+services.AddCors(options =>
 {
-    options.AddPolicy("AllowMyOrigin",
-        builder => builder
+    options.AddPolicy(name: testSpesific, policyBuilder =>
+    {
+        policyBuilder.WithOrigins("http://localhost:3001")
             .AllowAnyHeader()
             .AllowCredentials()
-            .AllowAnyMethod());
+            .AllowAnyMethod();
+        policyBuilder.WithOrigins("http://localhost:8080")
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .AllowAnyMethod();
+    });
+
 });
 
 var app = builder.Build();
@@ -62,7 +71,7 @@ app.MapGrpcService<JwtService>();
 app.MapGet("/",
     () =>
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-app.UseCors("AllowMyOrigin");
+app.UseCors(testSpesific);
 app.UseAuthentication();
 app.UseAuthorization();
 app.Run();

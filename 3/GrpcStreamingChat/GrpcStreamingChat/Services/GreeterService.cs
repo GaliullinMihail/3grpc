@@ -1,8 +1,11 @@
 using Grpc.Core;
 using GrpcStreamingChat;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GrpcStreamingChat.Services;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class GreeterService : Greeter.GreeterBase
 {
     private readonly ILogger<GreeterService> _logger;

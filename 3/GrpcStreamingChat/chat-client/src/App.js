@@ -4,12 +4,13 @@ import { JwtSenderClient, JwtRequest } from "./generated/jwt_grpc_web_pb";
 import { 
   ChatServerClient,
   ClientMessageLogin,
-  ClientMessageChat
+  ClientMessageChat,
+  ClientMessage
 } from "./generated/message_grpc_web_pb";
 // import { 
 //   ClientMessage,
 //   ClientMessageLogin,
-//   ClientMessageChat,
+//   ,
 //   ServerMessage,
 //   ServerMessageLoginFailure,
 //   ServerMessageLoginSuccess,
@@ -49,23 +50,24 @@ function App() {
     });
   };
 
-  // const handleSendMessage = (msg, onSuccess) => {
-  //   console.log(user, !user);
-  //   if (!user) return;
-  //   const req = new MessageRequest();
-  //   req.setId(user.id);
-  //   req.setMessage(msg);
-  //   console.log("here we go");
-  //   client.sendMessage(req, {}, (err, resp) => {
-  //     if (err) throw err;
-  //     onSuccess();
-  //   });
-  // };
+  const handleSendMessage = (msg, onSuccess) => {
+    console.log(user, !user);
+    if (!user) return;
+    const request = new ClientMessage();
+    const req = new ClientMessageChat();
+    req.setId(user.id);
+    req.setMessage(msg);
+    console.log("here we go");
+    chatClient.sendMessage(request, {}, (err, resp) => {
+      if (err) throw err;
+      onSuccess();
+    });
+  };
 
   useEffect(() => {
     if (!user) return;
-    (() => {
-      // chatReq.setUserName(user.name);
+    
+    (async () => {
       let loginReq = new ClientMessageLogin();
       loginReq.setUserName(user.name);
       loginReq.setChatRoomId("0");
@@ -73,9 +75,12 @@ function App() {
       let metadata = {
         "Authorization": `Bearer ${user.token}`
       } 
-      chatClient.getServerStream(loginReq, metadata, (err, resp) => {
+      let clientMessage = new ClientMessage();
+      clientMessage.setLogin(loginReq);
+      let ans = await chatClient.getServerStream(clientMessage, metadata, (err, resp) => {
         if (err) {
           console.error(err); 
+          console.log("error");
           return;
         }
         
@@ -84,13 +89,21 @@ function App() {
         setServerStream(resp);
 
         resp.on("data", (chunk) => {
+          const msg = chunk.toObject();
+          console.log(msg);
+          setMessages((prev) => [...prev, msg]);
+        });
+      });
+      
+      console.log(ans);
+      ans.on("data", (chunk) => {
         const msg = chunk.toObject();
         console.log(msg);
         setMessages((prev) => [...prev, msg]);
       });
-      });
-      
+      console.log("useEffect");
     })();
+    
   }, [user]);
 
   return (
@@ -99,7 +112,7 @@ function App() {
         <Chat
           user={user}
           messages={messages}
-          // onMessageSubmit={handleSendMessage}
+          onMessageSubmit={handleSendMessage}
         />
       ) : (
         <Greeting onUsernameEnter={handleEnterChat} />
