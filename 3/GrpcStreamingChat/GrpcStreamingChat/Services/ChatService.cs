@@ -48,16 +48,32 @@ public class ChatService : ChatServer.ChatServerBase
             UserName = userName
         });
         await _chatRoomService.BroadcastClientJoinedRoomMessage(userName, chatRoomId);
-        
+        var i = 0;
+        while (!context.CancellationToken.IsCancellationRequested && i < 10)
+        {
+            await responseStream.WriteAsync(new ServerMessage
+            {
+                Chat = new ServerMessageChat
+                {
+                    Text = "some text",
+                    UserName = "some user name"
+                }
+            });
+            i++;
+        }
+
+
+        Console.WriteLine("completed");
+        return;
     }
 
     public override async Task<Empty> SendMessage(ClientMessage request, ServerCallContext context)
     {
         var chatMessage = request.Chat;
-        var chatRoomId = chatMessage.Text;
+        var chatRoomId = "0";
         var userName = chatMessage.UserName;
 
-        if (userName is not null && chatRoomId is not null)
+        if (userName is not null)
         {
             //broad cast the message to the room
             await _chatRoomService.BroadcastMessageToChatRoom(chatRoomId, userName, chatMessage.Text);
