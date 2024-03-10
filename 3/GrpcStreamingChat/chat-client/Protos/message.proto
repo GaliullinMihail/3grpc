@@ -6,8 +6,9 @@ package chat;
 
 service ChatServer {
   // Bidirectional communication stream between client and server
-  rpc HandleCommunication(stream ClientMessage) returns (stream ServerMessage);
+  rpc GetServerStream(ClientMessage) returns (stream ServerMessage);
 
+  rpc SendMessage(ClientMessage) returns (Empty);
 }
 
 //Client Messages:
@@ -26,9 +27,13 @@ message ClientMessageLogin {
 
 message ClientMessageChat {
   string text = 1;
+  string user_name = 2;
 }
 
 //Server Messages
+message Empty{
+}
+
 message ServerMessage {
   oneof content {
     ServerMessageLoginSuccess login_success = 1;

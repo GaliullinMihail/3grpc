@@ -100,13 +100,12 @@ public class ChatRoomService : IChatRoomService
                 var message = new ServerMessage { Chat = new ServerMessageChat { UserName = senderName, Text = text } };
 
                 var tasks = new List<Task>();
-                var streamList = _chatRooms[chatRoomId];
-                foreach (var stream in _chatRooms[chatRoomId])
+                foreach (var client in _chatRooms[chatRoomId])
                 {
                     //This senderName can be something of unique Id for each user.
-                    if (stream != null && stream != default && stream.UserName != senderName)
+                    if (client != null)
                     {
-                        tasks.Add(stream.StreamWriter.WriteAsync(message));
+                        tasks.Add(client.StreamWriter.WriteAsync(message));
                     }
                 }
 
@@ -118,5 +117,8 @@ public class ChatRoomService : IChatRoomService
     public class ChatClient
     {
         public IServerStreamWriter<ServerMessage> StreamWriter { get; set; }
+        
+        public IAsyncStreamReader<ClientMessage> StreamReader { get; set; }
+        
         public string UserName { get; set; }
     }

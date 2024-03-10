@@ -14,66 +14,55 @@ public class ChatService : ChatServer.ChatServerBase
         _chatRoomService = chatRoomService;
     }
 
-    public override async Task HandleCommunication(IAsyncStreamReader<ClientMessage> requestStream, IServerStreamWriter<ServerMessage> responseStream, ServerCallContext context)
+    public override async Task GetServerStream(
+        ClientMessage requestMessage,
+        IServerStreamWriter<ServerMessage> responseStream,
+        ServerCallContext context)
+    {
+        var loginMessage = requestMessage.Login;
+        //get username and chatRoom Id from clientMessage.
+        var chatRoomId = loginMessage.ChatRoomId;
+        var userName = loginMessage.UserName;
+
+        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(chatRoomId))
         {
-            var userName = string.Empty;
-            var chatRoomId = string.Empty;
-            
-            while (true)
+            //Send a login Failure message.
+            var failureMessage = new ServerMessage
             {
-                //Read a message from the client.
-                var clientMessage = await _chatRoomService.ReadMessageWithTimeoutAsync(requestStream, Timeout.InfiniteTimeSpan);
+                LoginFailure = new ServerMessageLoginFailure { Reason = "Invalid username" }
+            };
 
-                switch (clientMessage.ContentCase)
-                {
-                    case ClientMessage.ContentOneofCase.Login:
+            await responseStream.WriteAsync(failureMessage);
 
-                        var loginMessage = clientMessage.Login;
-                        //get username and chatRoom Id from clientMessage.
-                        chatRoomId = loginMessage.ChatRoomId;
-                        userName = loginMessage.UserName;
-
-                        if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(chatRoomId))
-                        {
-                            //Send a login Failure message.
-                            var failureMessage = new ServerMessage
-                            {
-                                LoginFailure = new ServerMessageLoginFailure { Reason = "Invalid username" }
-                            };
-
-                            await responseStream.WriteAsync(failureMessage);
-
-                            return;
-                        }
-
-                        //Send login success message to client
-                        var successMessage = new ServerMessage { LoginSuccess = new ServerMessageLoginSuccess() };
-                        await responseStream.WriteAsync(successMessage);
-
-                        //Add client to chat room.
-                        await _chatRoomService.AddClientToChatRoom(chatRoomId, new ChatClient
-                        {
-                            StreamWriter = responseStream,
-                            UserName = userName
-                        });
-                        await _chatRoomService.BroadcastClientJoinedRoomMessage(userName, chatRoomId);
-
-                        break;
-
-                    case ClientMessage.ContentOneofCase.Chat:
-
-                        var chatMessage = clientMessage.Chat;
-
-                        if (userName is not null && chatRoomId is not null)
-                        {
-                            //broad cast the message to the room
-                            await _chatRoomService.BroadcastMessageToChatRoom(chatRoomId, userName, chatMessage.Text);
-                        }
-
-                        break;
-                    
-                }
-                
-            }
+            return;
         }
+
+        //Send login success message to client
+        var successMessage = new ServerMessage { LoginSuccess = new ServerMessageLoginSuccess() };
+        await responseStream.WriteAsync(successMessage);
+
+        //Add client to chat room.
+        await _chatRoomService.AddClientToChatRoom(chatRoomId, new ChatClient
+        {
+            StreamWriter = responseStream,
+            UserName = userName
+        });
+        await _chatRoomService.BroadcastClientJoinedRoomMessage(userName, chatRoomId);
+        
+    }
+
+    public override async Task<Empty> SendMessage(ClientMessage request, ServerCallContext context)
+    {
+        var chatMessage = request.Chat;
+        var chatRoomId = chatMessage.Text;
+        var userName = chatMessage.UserName;
+
+        if (userName is not null && chatRoomId is not null)
+        {
+            //broad cast the message to the room
+            await _chatRoomService.BroadcastMessageToChatRoom(chatRoomId, userName, chatMessage.Text);
+        }
+
+        return new Empty();
+    }
 }

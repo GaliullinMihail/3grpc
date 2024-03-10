@@ -7,13 +7,19 @@ protoc -I=./Protos jwt.proto \
     --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./generated
 
 protoc -I=./Protos message.proto \
-    --js_out=import_style=commonjs:./generated \
-    --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./generated
+    --js_out=import_style=commonjs:./src/generated \
+    --grpc-web_out=import_style=commonjs,mode=grpcwebtext:./src/generated
+
+
+
 
 Set-ExecutionPolicy Unrestricted -Scope CurrentUser
 
 protoc -I./Protos --grpc_out=import_style=commonjs,mode=grpcwebtext:./src/generated jwt.proto
 protoc -I./Protos --js_out=import_style=commonjs:./src/generated jwt.proto
 
-protoc -I./Protos --grpc_out=import_style=commonjs,mode=grpcwebtext:./src/generated \
-    --js_out=import_style=commonjs:./src/generated message.proto
+protoc -I./Protos --grpc_out=import_style=commonjs,mode=grpcwebtext:./src/generated message.proto
+protoc -I./Protos --js_out=import_style=commonjs:./src/generated message.proto
+
+
+protoc -I./Protos --grpc_out=mode=grpcwebtext:./src/generated message.proto

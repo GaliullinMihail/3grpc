@@ -33,7 +33,7 @@ const style = {
 
 const Chat = (props) => {
   const [msg, setMsg] = useState("");
-  const { userList, messages, onMessageSubmit, user } = props;
+  const { messages, onMessageSubmit, user } = props;
 
   const handleSendMessage = (e) => {
     console.log("called");
@@ -46,15 +46,6 @@ const Chat = (props) => {
   return (
     <form onSubmit={handleSendMessage}>
       <Grid container style={style.container} spacing={3}>
-        <Grid item xs={3}>
-          <Paper style={style.paper}>
-            <UserList
-              users={userList.map((x) => ({
-                ...x
-              }))}
-            />
-          </Paper>
-        </Grid>
         <Grid item xs={9}>
           <Paper style={style.paper}>
             <div
