@@ -4,7 +4,7 @@ import "./style.css";
 // import { StreamMessage } from "../proto/random_pb";
 
 const ChatBubble = ({ message, isCurrentUser }) => {
-  const { senderName, message: text } = message;
+  // const { message: userName, message: text } = message;
   return (
     <Grid
       container
@@ -18,8 +18,8 @@ const ChatBubble = ({ message, isCurrentUser }) => {
         className="speech-bubble"
         style={{ backgroundColor: isCurrentUser ? "#bad4ff" : undefined }}
       >
-        <p>{text}</p>
-        {!isCurrentUser && <cite>{senderName}</cite>}
+        <p>{message.text}</p>
+        {!isCurrentUser && <cite>{message.userName}</cite>}
       </blockquote>
     </Grid>
   );

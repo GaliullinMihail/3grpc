@@ -7,16 +7,6 @@ import {
   ClientMessageChat,
   ClientMessage
 } from "./generated/message_grpc_web_pb";
-// import { 
-//   ClientMessage,
-//   ClientMessageLogin,
-//   ,
-//   ServerMessage,
-//   ServerMessageLoginFailure,
-//   ServerMessageLoginSuccess,
-//   ServerMessageUserJoined,
-//   ServerMessageChat
-// } from "./generated/message_pb";
 import Greeting from "./components/Greeting";
 import Chat from "./components/Chat";
 
@@ -51,17 +41,22 @@ function App() {
   };
 
   const handleSendMessage = (msg, onSuccess) => {
-    console.log(user, !user);
     if (!user) return;
     const request = new ClientMessage();
     const req = new ClientMessageChat();
-    req.setId(user.id);
-    req.setMessage(msg);
+    req.setUserName(user.name);
+    req.setText(msg);
     console.log("here we go");
-    chatClient.sendMessage(request, {}, (err, resp) => {
-      if (err) throw err;
-      onSuccess();
+    let metadata = {
+      "Authorization": `Bearer ${user.token}`
+    } 
+    request.setChat(req);
+    chatClient.sendMessage(request, metadata, (err, resp) => {
+      if (err) console.log(err);
+      console.log(resp);
     });
+
+    onSuccess();
   };
 
   useEffect(() => {
@@ -77,29 +72,24 @@ function App() {
       } 
       let clientMessage = new ClientMessage();
       clientMessage.setLogin(loginReq);
-      let ans = await chatClient.getServerStream(clientMessage, metadata, (err, resp) => {
-        if (err) {
-          console.error(err); 
-          console.log("error");
-          return;
-        }
-        
-        console.log("stream");
-        console.log(resp);
-        setServerStream(resp);
-
-        resp.on("data", (chunk) => {
-          const msg = chunk.toObject();
-          console.log(msg);
-          setMessages((prev) => [...prev, msg]);
-        });
-      });
+      var ans = chatClient.getServerStream(clientMessage, metadata);
       
       console.log(ans);
+      setServerStream(ans);
       ans.on("data", (chunk) => {
         const msg = chunk.toObject();
-        console.log(msg);
-        setMessages((prev) => [...prev, msg]);
+        console.log(msg.chat);
+        if (msg.chat !== undefined)
+          setMessages((prev) => [...prev, msg.chat]);
+
+      });
+
+      ans.on("status", function (status) {
+        console.log(status.code, status.details, status.metadata);
+      });
+
+      ans.on("end", () => {
+        console.log("Stream ended.");
       });
       console.log("useEffect");
     })();

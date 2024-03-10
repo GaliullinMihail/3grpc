@@ -8,6 +8,7 @@ public interface IChatRoomService
         TimeSpan timeout);
 
     public Task AddClientToChatRoom(string chatRoomId, ChatClient chatClient);
+    public Task RemoveClientFromChatRoom(string chatRoomId, ChatClient chatClient);
     public Task BroadcastClientJoinedRoomMessage(string userName, string chatRoomId);
     public Task BroadcastMessageToChatRoom(string chatRoomId, string senderName, string text);
 }

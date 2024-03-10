@@ -23,7 +23,7 @@ public class ChatService : ChatServer.ChatServerBase
         //get username and chatRoom Id from clientMessage.
         var chatRoomId = loginMessage.ChatRoomId;
         var userName = loginMessage.UserName;
-
+        Console.WriteLine(userName);
         if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(chatRoomId))
         {
             //Send a login Failure message.
@@ -40,29 +40,26 @@ public class ChatService : ChatServer.ChatServerBase
         //Send login success message to client
         var successMessage = new ServerMessage { LoginSuccess = new ServerMessageLoginSuccess() };
         await responseStream.WriteAsync(successMessage);
+        Console.WriteLine("client successful login");
 
         //Add client to chat room.
-        await _chatRoomService.AddClientToChatRoom(chatRoomId, new ChatClient
+        var client = new ChatClient
         {
             StreamWriter = responseStream,
             UserName = userName
-        });
+        };
+        await _chatRoomService.AddClientToChatRoom(chatRoomId, client);
+        
+        Console.WriteLine("client successful added to room");
         await _chatRoomService.BroadcastClientJoinedRoomMessage(userName, chatRoomId);
         var i = 0;
-        while (!context.CancellationToken.IsCancellationRequested && i < 10)
+        Console.WriteLine("client successful get broadcast join");
+       
+        while (!context.CancellationToken.IsCancellationRequested)
         {
-            await responseStream.WriteAsync(new ServerMessage
-            {
-                Chat = new ServerMessageChat
-                {
-                    Text = "some text",
-                    UserName = "some user name"
-                }
-            });
-            i++;
         }
 
-
+        await _chatRoomService.RemoveClientFromChatRoom("0", client);
         Console.WriteLine("completed");
         return;
     }

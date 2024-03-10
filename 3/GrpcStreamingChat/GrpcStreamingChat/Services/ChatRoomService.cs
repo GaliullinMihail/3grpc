@@ -61,6 +61,13 @@ public class ChatRoomService : IChatRoomService
 
             await Task.CompletedTask;
         }
+
+        public async Task RemoveClientFromChatRoom(string chatRoomId, ChatClient chatClient)
+        {
+            _chatRooms[chatRoomId].Remove(chatClient);
+            await Task.CompletedTask;
+        }
+
         /// <summary>
         /// Broad client joined the room message.
         /// </summary>

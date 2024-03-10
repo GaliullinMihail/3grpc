@@ -86,7 +86,7 @@ const Chat = (props) => {
                   <ChatBubble
                     key={i}
                     message={msg}
-                    isCurrentUser={msg.id === user.id}
+                    isCurrentUser={msg.userName === user.name}
                   />
                 ))}
               </div>
